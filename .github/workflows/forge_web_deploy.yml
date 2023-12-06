@@ -44,12 +44,17 @@ jobs:
           echo "${{ secrets.SSH_PUB_KEY }}" > ~/.ssh/id_rsa.pub
           chmod 600 ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa.pub
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/id_rsa
+          #eval "$(ssh-agent -s)"
+          #ssh-add ~/.ssh/id_rsa
           version=$(ls -tr pkg | tail -1)
-          npx harrison deploy pkg/$version --env dev
-          npx harrison deploy pkg/$version --env stage
-          npx harrison deploy pkg/$version --env prod
+          
+          for env in dev stage prod; do
+            echo "Starting deploy to $env"
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/id_rsa
+            npx harrison deploy pkg/$version --env $env
+            echo "Successfully deployed to $env"
+          done
 
       - name: "Generate release notes"
         run: |
