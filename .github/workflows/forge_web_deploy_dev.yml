@@ -52,4 +52,4 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            Your changes have been deployed in dev, check it out: [forge web](https://forgenext-web-dev.ops.puppetlabs.net)
+            Your changes have been successfully deployed in dev, check it out: [forge web](https://forgenext-web-dev.ops.puppetlabs.net)
