@@ -1,0 +1,75 @@
+name: release_api_dev
+
+on:
+  workflow_call:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR testing workflow status
+        id: check_status
+        run: |
+          status=$(curl -s -X GET \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/pr-testing.yaml/runs?event=pull_request" | jq -r '.workflow_runs[0].conclusion')
+          echo "Status of the latest run of pr-testing.yaml: $status"
+          if [ "$status" = "success" ]; then
+            echo "The pr-testing.yaml workflow was successful!"
+          else
+            echo "The pr-testing.yaml workflow failed or is still in progress."
+            exit 1
+          fi
+
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+        with:
+          ref: ${{ github.event.inputs.target }}
+          clean: true
+          fetch-depth: 0
+
+      - name: "Setup ruby"
+        uses: "ruby/setup-ruby@v1"
+        with:
+          ruby-version: "3.1.2"
+          bundler-cache: "true"
+
+      - name: "Bundle environment"
+        run: |
+          echo ::group::bundler environment
+          bundle env
+          echo ::endgroup::
+
+      - name: "Build a new release"
+        run: |
+           mkdir -p /home/runner/work/puppet-forge-api/puppet-forge-api/pkg && bundle exec harrison package
+
+      - name: "Setup twingate"
+        uses: twingate/github-action@v1
+        with:
+          service-key: ${{ secrets.TWINGATE_KEY }}
+
+      - name: "Deploy"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+          export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PUB_KEY }}" > ~/.ssh/id_rsa.pub
+          chmod 600 ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa.pub
+          version=$(ls -tr pkg | tail -1)
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+          echo "Starting deploy to dev"
+          cd /home/runner/work/puppet-forge-api/puppet-forge-api && bundle exec harrison deploy pkg/$version --env dev --no-confirm
+          echo "Successfully deployed to dev"
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Your changes have been successfully deployed in dev, check it out: [forge web](https://forgenext-web-dev.ops.puppetlabs.net)
