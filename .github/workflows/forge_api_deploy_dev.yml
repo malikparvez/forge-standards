@@ -16,7 +16,7 @@ jobs:
           echo "Status of the latest run of pr-testing.yaml: $status"
           if [ "$status" = "success" ]; then
             echo "The pr-testing.yaml workflow was successful!"
-            sudo apt-get install build-essential
+            sudo apt-get install jq
             export RUBYJQ_USE_SYSTEM_LIBRARIES=1
           else
             echo "The pr-testing.yaml workflow failed or is still in progress."
