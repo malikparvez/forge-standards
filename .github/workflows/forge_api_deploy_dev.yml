@@ -29,12 +29,14 @@ jobs:
           fetch-depth: 0
           
       - name: Install jq and jq development files
-        run: sudo apt-get install jq libjq-dev
+        run: |
+           sudo apt-get install jq libjq-dev
+           export RUBYJQ_USE_SYSTEM_LIBRARIES=1
         
       - name: "Setup ruby"
         uses: "ruby/setup-ruby@v1"
         with:
-          ruby-version: "2.7"
+          ruby-version: "3.1.2"
           bundler-cache: "true"
 
       - name: "Bundle environment"
