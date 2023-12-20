@@ -16,6 +16,7 @@ jobs:
           echo "Status of the latest run of pr-testing.yaml: $status"
           if [ "$status" = "success" ]; then
             echo "The pr-testing.yaml workflow was successful!"
+            echo "${{ github.event.label.name }}"
           else
             echo "The pr-testing.yaml workflow failed or is still in progress."
             exit 1
