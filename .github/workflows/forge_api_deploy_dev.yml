@@ -21,6 +21,12 @@ jobs:
             exit 1
           fi
 
+      - name: "Setup ruby"
+        uses: "ruby/setup-ruby@v1"
+        with:
+          ruby-version: "3.1.2"
+          bundler-cache: "true"
+
       - name: "Checkout"
         uses: "actions/checkout@v4"
         with:
@@ -32,12 +38,7 @@ jobs:
         run: |
            sudo apt-get install jq libjq-dev
            export RUBYJQ_USE_SYSTEM_LIBRARIES=1
-        
-      - name: "Setup ruby"
-        uses: "ruby/setup-ruby@v1"
-        with:
-          ruby-version: "3.1.2"
-          bundler-cache: "true"
+           bundle install
 
       - name: "Bundle environment"
         run: |
