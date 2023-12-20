@@ -71,7 +71,7 @@ jobs:
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_rsa
           echo "Starting deploy to dev"
-          bundle exec harrison deploy pkg/$version --env dev
+          bundle exec harrison deploy pkg/$version --env dev --no-confirm 
           echo "Successfully deployed to dev"
 
       - name: Comment PR
