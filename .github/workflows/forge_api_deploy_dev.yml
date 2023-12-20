@@ -16,8 +16,6 @@ jobs:
           echo "Status of the latest run of pr-testing.yaml: $status"
           if [ "$status" = "success" ]; then
             echo "The pr-testing.yaml workflow was successful!"
-            sudo apt-get install jq
-            export RUBYJQ_USE_SYSTEM_LIBRARIES=1
           else
             echo "The pr-testing.yaml workflow failed or is still in progress."
             exit 1
@@ -29,7 +27,10 @@ jobs:
           ref: ${{ github.event.inputs.target }}
           clean: true
           fetch-depth: 0
-
+          
+      - name: Install jq and jq development files
+        run: sudo apt-get install jq libjq-dev
+        
       - name: "Setup ruby"
         uses: "ruby/setup-ruby@v1"
         with:
