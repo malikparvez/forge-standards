@@ -34,7 +34,7 @@ jobs:
           clean: true
           fetch-depth: 0
           
-      - name: Install jq and jq development files
+      - name: Install jq and bundle install
         run: |
            sudo apt-get install jq libjq-dev
            export RUBYJQ_USE_SYSTEM_LIBRARIES=1
