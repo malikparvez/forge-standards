@@ -70,30 +70,13 @@ jobs:
           version=$(ls -tr pkg | tail -1)
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_rsa
+          echo "Deploying to dev environment"
+          cd /home/runner/work/puppet-forge-api/puppet-forge-api && bundle exec harrison deploy pkg/$version --env dev --no-confirm
+          echo "Successfully deployed to dev"
 
-          if [ "${{ github.event.label.name }}" == "deploy_dev" ]; then
-            echo "Deploying to dev environment"
-            cd /home/runner/work/puppet-forge-api/puppet-forge-api && bundle exec harrison deploy pkg/$version --env dev --no-confirm
-            echo "Successfully deployed to dev"
-          elif [ "${{ github.event.label.name }}" == "deploy_stage" ]; then
-            echo "Deploying to stage environment"
-            cd /home/runner/work/puppet-forge-api/puppet-forge-api && bundle exec harrison deploy pkg/$version --env stage --no-confirm
-            echo "Successfully deployed to stage"
-          else
-            echo "Invalid label for deployment"
-            exit 1
-          fi
-
-      - name: Comment PR Dev
-        if: ${{ github.event.label.name == 'deploy_dev' }}
+      - name: Comment PR
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
             Your changes have been successfully deployed in dev, check it out: [forge web](https://forgenext-web-dev.ops.puppetlabs.net)
-     
-      - name: Comment PR Stage
-        if: ${{ github.event.label.name == 'deploy_stage' }}
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            Your changes have been successfully deployed in stage, check it out: [forge web](https://forgenext-web-stage.ops.puppetlabs.net)
+    
