@@ -84,8 +84,16 @@ jobs:
             exit 1
           fi
 
-      - name: Comment PR
+      - name: Comment PR Dev
+        if: ${{ github.event.label.name == 'deploy_dev' }}
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
             Your changes have been successfully deployed in dev, check it out: [forge web](https://forgenext-web-dev.ops.puppetlabs.net)
+     
+      - name: Comment PR Stage
+        if: ${{ github.event.label.name == 'deploy_stage' }}
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Your changes have been successfully deployed in stage, check it out: [forge web](https://forgenext-web-stage.ops.puppetlabs.net)
