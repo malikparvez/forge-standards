@@ -37,7 +37,7 @@ jobs:
               git pull origin main
           fi
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
 
       # if the version is not major then checkout current feature branch
       - name: checkout current feature branch
