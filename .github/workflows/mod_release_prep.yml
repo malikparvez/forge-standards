@@ -36,6 +36,8 @@ jobs:
               # Switch back to the main branch
               git switch main
               git pull origin main
+          else
+            echo "major_version_upgrade=false" >> $GITHUB_OUTPUT
           fi
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
