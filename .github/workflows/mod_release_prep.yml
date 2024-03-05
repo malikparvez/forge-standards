@@ -27,8 +27,8 @@ jobs:
               echo "major_version_upgrade=true" >> $GITHUB_OUTPUT
 
               # Cut a new feature branch from main
-              git config user.name "$(gh api /users/${GITHUB_ACTOR} | jq .name -r)"
-              git config user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+              git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
+              git config --local user.name "GitHub Actions"
               git switch -c ${{ github.event.inputs.version }}
               git push origin ${{ github.event.inputs.version }}
               
