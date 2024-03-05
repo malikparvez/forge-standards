@@ -29,8 +29,8 @@ jobs:
               # Cut a new feature branch from main
               git config user.name "$(gh api /users/${GITHUB_ACTOR} | jq .name -r)"
               git config user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
-              git switch -c $new_version
-              git push origin $new_version
+              git switch -c ${{ github.event.inputs.version }}
+              git push origin ${{ github.event.inputs.version }}
               
               # Switch back to the main branch
               git switch main
