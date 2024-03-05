@@ -22,7 +22,8 @@ jobs:
           latest_tag=$(curl -sL https://api.github.com/repos/${GITHUB_REPOSITORY}/tags | jq -r '.[0].name')
           current_version=$(echo "$latest_tag" | cut -d'.' -f1 | sed 's/[^0-9]//g')
           new_version=$(echo "${{ github.event.inputs.version }}" | cut -d'.' -f1 | sed 's/[^0-9]//g')
-
+          echo "new : $new_version"
+          echo "current: $current_version"
           if [ "$new_version" -gt "$current_version" ]; then
               echo "major_version_upgrade=true" >> $GITHUB_OUTPUT
 
