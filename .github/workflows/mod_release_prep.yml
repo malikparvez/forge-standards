@@ -93,7 +93,7 @@ jobs:
           branch: "release-prep"
           delete-branch: true
           title: "Release prep v${{ steps.get_version.outputs.version }}"
-          base: ${{ steps.compare_versions.outputs.current_version.base_branch }}
+          base: "${{ steps.compare_versions.outputs.base_branch }}"
           body: |
             Automated release of new version
           labels: "maintenance"
