@@ -30,14 +30,14 @@ jobs:
               echo "major_version_upgrade=true" >> $GITHUB_OUTPUT
 
               # Cut a new feature branch from main
-              git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
-              git config --local user.name "GitHub Actions"
-              git switch -c ${{ github.event.inputs.version }}
-              git push origin ${{ github.event.inputs.version }}
+              #git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
+              #git config --local user.name "GitHub Actions"
+              #git switch -c ${{ github.event.inputs.version }}
+              #git push origin ${{ github.event.inputs.version }}
               
               # Switch back to the main branch
-              git switch main
-              git pull origin main
+              #git switch main
+              #git pull origin main
           else
             echo "major_version_upgrade=false" >> $GITHUB_OUTPUT
           fi
@@ -96,3 +96,14 @@ jobs:
           body: |
             Automated release of new version
           labels: "maintenance"
+
+      - name: "Cut out a new feature branch for major release"
+        if: steps.compare_versions.outputs.major_version_upgrade == 'true'
+        run: |
+          # Cut a new feature branch from main
+          git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+          git switch -c ${{ github.event.inputs.version }}
+          git push origin ${{ github.event.inputs.version }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
