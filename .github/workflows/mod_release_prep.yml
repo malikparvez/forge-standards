@@ -50,7 +50,7 @@ jobs:
         if: steps.compare_versions.outputs.major_version_upgrade == 'false'
         uses: actions/checkout@v4
         with:
-          ref: "v${{ steps.compare_versions.outputs.current_version}}.0.0"
+          ref: "${{ steps.compare_versions.outputs.current_version}}.0.0"
 
       - name: "Generate changelog"
         run: |
