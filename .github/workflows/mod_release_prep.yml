@@ -40,7 +40,7 @@ jobs:
               #git pull origin main
           else
             echo "major_version_upgrade=false" >> $GITHUB_OUTPUT
-            echo "base_branch=v$current_version.0.0" >> $GITHUB_OUTPUT
+            echo "base_branch=$current_version.0.0" >> $GITHUB_OUTPUT
           fi
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
