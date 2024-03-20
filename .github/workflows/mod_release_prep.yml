@@ -89,10 +89,10 @@ jobs:
         #if: ${{ steps.check.outputs.release == 'true' }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Release prep v${{ steps.get_version.outputs.version }}"
+          commit-message: "Release prep v${{ github.event.inputs.version }}"
           branch: "release-prep"
           delete-branch: true
-          title: "Release prep v${{ steps.get_version.outputs.version }}"
+          title: "Release prep v${{ github.event.inputs.version }}"
           base: "${{ steps.compare_versions.outputs.base_branch }}"
           body: |
             Automated release of new version
