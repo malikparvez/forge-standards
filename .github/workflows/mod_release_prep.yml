@@ -114,6 +114,6 @@ jobs:
         
       - name: "Create release"
         run: |
-          gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }} -F README.md
+          gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }} -F my_custom_release.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
