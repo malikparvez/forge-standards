@@ -53,6 +53,7 @@ jobs:
           ref: "${{ steps.compare_versions.outputs.current_version}}.0.0"
 
       - name: "Generate changelog"
+        if: steps.compare_versions.outputs.major_version_upgrade == 'true'
         run: |
           export GH_HOST=github.com
           gh extension install chelnak/gh-changelog
