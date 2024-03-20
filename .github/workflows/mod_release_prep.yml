@@ -61,16 +61,16 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      #- name: "Update .version"
-      #  run: |
-      #    current_version=$(grep -o "version = '[^']*'" .version | awk -F"'" '{print $2}' | tr -d \n)
-      #    # Update version in version.rb, only matching first occurrence
-      #    sed -i "0,/$current_version/s//${{ github.event.inputs.version }}/" $(find . -name '.version')
+      - name: "Update .version"
+        run: |
+          current_version=$(grep -o "version = '[^']*'" .version | awk -F"'" '{print $2}' | tr -d \n)
+          # Update version in version.rb, only matching first occurrence
+          sed -i "0,/$current_version/s//${{ github.event.inputs.version }}/" $(find . -name '.version')
           
-      #- name: "Get version"
-      #  id: "get_version"
-      #  run: |
-      #    echo "version=$(grep -o "version = '[^']*'" .version | awk -F"'" '{print $2}' | tr -d \n)" >> $GITHUB_OUTPUT
+      - name: "Get version"
+        id: "get_version"
+        run: |
+          echo "version=$(grep -o "version = '[^']*'" .version | awk -F"'" '{print $2}' | tr -d \n)" >> $GITHUB_OUTPUT
 
       #- name: "Check if a release is necessary"
       #  id: "check"
