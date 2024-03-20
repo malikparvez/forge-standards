@@ -110,10 +110,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Compress files
-        run: zip -r my_custom_release.zip README.md  
+        run: zip -r app/my_custom_release.zip README.md  
         
       - name: "Create release"
         run: |
-          gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }} -F my_custom_release.zip
+          gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }} -F app/my_custom_release.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
