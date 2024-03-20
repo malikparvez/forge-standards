@@ -114,12 +114,12 @@ jobs:
         
       - name: "Create release"
         run: |
-          gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }}
+          gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }} -F OUTPUT.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Upload ZIP file
-        run: |
-          gh release upload v${{ github.event.inputs.version }} app/my_custom_release.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Upload ZIP file
+      #  run: |
+      #    gh release upload v${{ github.event.inputs.version }} app/my_custom_release.zip
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
