@@ -56,6 +56,10 @@ jobs:
         run: |
           export GH_HOST=github.com
           gh extension install chelnak/gh-changelog
+          if [[ "${{ steps.compare_versions.outputs.major_version_upgrade }}" == 'false' ]]; then
+            # set env variable
+            export CHANGELOG_EXCLUDED_LABELS="enhancement"
+          fi
           gh changelog new --next-version v${{ github.event.inputs.version }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
