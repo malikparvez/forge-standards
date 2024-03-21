@@ -101,7 +101,7 @@ jobs:
 
       - name: "Create release"
         run: |
-          gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }} --target ${{ steps.compare_versions.outputs.base_branch }}
+          gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
