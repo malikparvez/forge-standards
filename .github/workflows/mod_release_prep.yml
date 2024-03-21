@@ -111,16 +111,22 @@ jobs:
             Automated release of new version
           labels: "maintenance"
 
-      #- name: "Create release"
-      #  run: |
-      #    gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }} --target ${{ steps.compare_versions.outputs.base_branch }}
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  if_merged:
+    needs: compare-versions
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release-prep')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
 
-
+      - name: "Get version"
+        id: "get_version"
+        run: |
+          echo "version=$(grep -o "version = '[^']*'" .version | awk -F"'" '{print $2}' | tr -d \n)" >> $GITHUB_OUTPUT
           
-      #- name: Upload ZIP file
-      #  run: |
-      #    gh release upload v${{ github.event.inputs.version }} app/my_custom_release.zip
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Create release"
+        run: |
+          gh release create v${{ steps.get_version.outputs.version }} --title v${{ steps.get_version.outputs.version }} --target ${{ needs.compare-versions.outputs.base_branch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
