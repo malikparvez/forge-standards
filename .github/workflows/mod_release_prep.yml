@@ -104,8 +104,8 @@ jobs:
           branch: "release-prep"
           delete-branch: true
           title: "Release prep v${{ github.event.inputs.version }}"
-          base: "main"
-          #base: "${{ steps.compare_versions.outputs.base_branch }}"
+          # base: "main"
+          base: "${{ steps.compare_versions.outputs.base_branch }}"
           body: |
             Automated release of new version
           labels: "maintenance"
