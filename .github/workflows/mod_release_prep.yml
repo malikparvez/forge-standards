@@ -52,6 +52,16 @@ jobs:
         with:
           ref: "${{ steps.compare_versions.outputs.current_version}}.0.0"
           
+      - name: "Cut out a new feature branch for major release"
+        if: steps.compare_versions.outputs.major_version_upgrade == 'true'
+        run: |
+          # Cut a new feature branch from main
+          git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+          git switch -c ${{ github.event.inputs.version }}
+          git push origin ${{ github.event.inputs.version }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
           
       - name: "Generate changelog"
         run: |
@@ -108,16 +118,6 @@ jobs:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
-      - name: "Cut out a new feature branch for major release"
-        if: steps.compare_versions.outputs.major_version_upgrade == 'true'
-        run: |
-          # Cut a new feature branch from main
-          git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
-          git config --local user.name "GitHub Actions"
-          git switch -c ${{ github.event.inputs.version }}
-          git push origin ${{ github.event.inputs.version }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       #- name: Upload ZIP file
       #  run: |
