@@ -56,8 +56,7 @@ jobs:
         run: |
           export GH_HOST=github.com
           gh extension install chelnak/gh-changelog
-          gh changelog new --latest --next-version v${{ github.event.inputs.version }}
-          # gh changelog new --next-version v${{ github.event.inputs.version }}
+          gh changelog new --next-version v${{ github.event.inputs.version }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -85,17 +84,6 @@ jobs:
       #    git add .
       #    git commit -m "Release prep v${{ steps.get_version.outputs.version }}"
 
-      - name: "Cut out a new feature branch for major release"
-        if: steps.compare_versions.outputs.major_version_upgrade == 'true'
-        run: |
-          # Cut a new feature branch from main
-          git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
-          git config --local user.name "GitHub Actions"
-          git switch -c ${{ github.event.inputs.version }}
-          git push origin ${{ github.event.inputs.version }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: "Create pull Request"
         uses: "peter-evans/create-pull-request@v5"
         #if: ${{ steps.check.outputs.release == 'true' }}
@@ -111,12 +99,23 @@ jobs:
             Automated release of new version
           labels: "maintenance"
 
-        
       - name: "Create release"
         run: |
           gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }} --target ${{ steps.compare_versions.outputs.base_branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: "Cut out a new feature branch for major release"
+        if: steps.compare_versions.outputs.major_version_upgrade == 'true'
+        run: |
+          # Cut a new feature branch from main
+          git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+          git switch -c ${{ github.event.inputs.version }}
+          git push origin ${{ github.event.inputs.version }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
           
       #- name: Upload ZIP file
       #  run: |
