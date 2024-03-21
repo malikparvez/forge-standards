@@ -77,13 +77,13 @@ jobs:
       #  run: |
       #    git diff --quiet CHANGELOG.md && echo "release=false" >> $GITHUB_OUTPUT || echo "release=true" >> $GITHUB_OUTPUT
 
-      #- name: "Commit changes"
+      - name: "Commit changes"
         #if: ${{ steps.check.outputs.release == 'true' }}
-      #  run: |
-      #    git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
-      #    git config --local user.name "GitHub Actions"
-      #    git add .
-      #    git commit -m "Release prep v${{ steps.get_version.outputs.version }}"
+        run: |
+          git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Release prep v${{ steps.get_version.outputs.version }}"
       
 
       - name: "Create pull Request"
