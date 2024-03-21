@@ -76,6 +76,14 @@ jobs:
       #  run: |
       #    git diff --quiet CHANGELOG.md && echo "release=false" >> $GITHUB_OUTPUT || echo "release=true" >> $GITHUB_OUTPUT
 
+      - name: "Commit changes"
+        #if: ${{ steps.check.outputs.release == 'true' }}
+        run: |
+          git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Release prep v${{ steps.get_version.outputs.version }}"
+
       - name: "Cut out a new feature branch for major release"
         if: steps.compare_versions.outputs.major_version_upgrade == 'true'
         run: |
@@ -86,14 +94,6 @@ jobs:
           git push origin ${{ github.event.inputs.version }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: "Commit changes"
-        #if: ${{ steps.check.outputs.release == 'true' }}
-        run: |
-          git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
-          git config --local user.name "GitHub Actions"
-          git add .
-          git commit -m "Release prep v${{ steps.get_version.outputs.version }}"
 
       - name: "Create pull Request"
         uses: "peter-evans/create-pull-request@v5"
