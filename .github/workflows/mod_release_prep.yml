@@ -45,6 +45,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           
+       # if the version is not major then checkout current feature branch
+      - name: checkout current feature branch
+        if: steps.compare_versions.outputs.major_version_upgrade == 'false'
+        uses: actions/checkout@v4
+        with:
+          ref: "${{ steps.compare_versions.outputs.current_version}}.0.0"  
+          
       - name: "Generate changelog"
         run: |
           export GH_HOST=github.com
@@ -52,13 +59,6 @@ jobs:
           gh changelog new --next-version v${{ github.event.inputs.version }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # if the version is not major then checkout current feature branch
-      - name: checkout current feature branch
-        if: steps.compare_versions.outputs.major_version_upgrade == 'false'
-        uses: actions/checkout@v4
-        with:
-          ref: "${{ steps.compare_versions.outputs.current_version}}.0.0"
           
       - name: "Cut out a new feature branch for major release"
         if: steps.compare_versions.outputs.major_version_upgrade == 'true'
