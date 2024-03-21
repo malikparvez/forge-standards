@@ -101,11 +101,11 @@ jobs:
             Automated release of new version
           labels: "maintenance"
 
-      - name: "Create release"
-        run: |
-          gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }} --target ${{ steps.compare_versions.outputs.base_branch }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #- name: "Create release"
+      #  run: |
+      #    gh release create v${{ github.event.inputs.version }} --title v${{ github.event.inputs.version }} --target ${{ steps.compare_versions.outputs.base_branch }}
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
       #- name: "Cut out a new feature branch for major release"
