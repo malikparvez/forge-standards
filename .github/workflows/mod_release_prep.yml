@@ -51,7 +51,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: "${{ steps.compare_versions.outputs.current_version}}.0.0"
-
+          
+      - name: "Cut out a new feature branch for major release"
+        if: steps.compare_versions.outputs.major_version_upgrade == 'true'
+        run: |
+          # Cut a new feature branch from main
+          git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
+          git config --local user.name "GitHub Actions"
+          git switch -c ${{ github.event.inputs.version }}
+          git push origin ${{ github.event.inputs.version }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: "Generate changelog"
         run: |
           export GH_HOST=github.com
@@ -84,16 +95,6 @@ jobs:
       #    git add .
       #    git commit -m "Release prep v${{ steps.get_version.outputs.version }}"
       
-      - name: "Cut out a new feature branch for major release"
-        if: steps.compare_versions.outputs.major_version_upgrade == 'true'
-        run: |
-          # Cut a new feature branch from main
-          git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
-          git config --local user.name "GitHub Actions"
-          git switch -c ${{ github.event.inputs.version }}
-          git push origin ${{ github.event.inputs.version }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Create pull Request"
         uses: "peter-evans/create-pull-request@v5"
