@@ -29,15 +29,6 @@ jobs:
           if [ "$new_version" -gt "$current_version" ]; then
               echo "major_version_upgrade=true" >> $GITHUB_OUTPUT
               echo "base_branch=main" >> $GITHUB_OUTPUT
-              # Cut a new feature branch from main
-              #git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
-              #git config --local user.name "GitHub Actions"
-              #git switch -c ${{ github.event.inputs.version }}
-              #git push origin ${{ github.event.inputs.version }}
-              
-              # Switch back to the main branch
-              #git switch main
-              #git pull origin main
           else
             echo "major_version_upgrade=false" >> $GITHUB_OUTPUT
             echo "base_branch=$current_version.0.0" >> $GITHUB_OUTPUT
@@ -82,13 +73,7 @@ jobs:
         run: |
           echo "version=$(grep -o "version = '[^']*'" .version | awk -F"'" '{print $2}' | tr -d \n)" >> $GITHUB_OUTPUT
 
-      #- name: "Check if a release is necessary"
-      #  id: "check"
-      #  run: |
-      #    git diff --quiet CHANGELOG.md && echo "release=false" >> $GITHUB_OUTPUT || echo "release=true" >> $GITHUB_OUTPUT
-
       - name: "Commit changes"
-        #if: ${{ steps.check.outputs.release == 'true' }}
         run: |
           git config --local user.email "${{ github.repository_owner }}@users.noreply.github.com"
           git config --local user.name "GitHub Actions"
@@ -98,14 +83,12 @@ jobs:
 
       - name: "Create pull Request"
         uses: "peter-evans/create-pull-request@v5"
-        #if: ${{ steps.check.outputs.release == 'true' }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "Release prep v${{ github.event.inputs.version }}"
           branch: "release-prep"
           delete-branch: true
           title: "Release prep v${{ github.event.inputs.version }}"
-          # base: "main"
           base: "${{ steps.compare_versions.outputs.base_branch }}"
           body: |
             Automated release of new version
