@@ -1,4 +1,4 @@
-name: mod_release_prep
+name: release_prep
 
 on:
   workflow_call:
@@ -8,7 +8,7 @@ on:
         required: true
         type: "string"
 jobs:
-  compare-versions:
+  release_prep:
     runs-on: ubuntu-latest
 
     steps:
