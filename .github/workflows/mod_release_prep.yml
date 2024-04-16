@@ -24,8 +24,8 @@ jobs:
         with:
           script: |
             const response = await github.repos.listTags({
-              owner: 'owner',
-              repo: 'repository'
+              owner: 'malikparvez',
+              repo: 'forge-standards'
             });
             latest_tag = response.data[0].name
             console.log('Latest tag:', latestTag)
