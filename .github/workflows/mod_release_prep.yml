@@ -16,52 +16,29 @@ jobs:
         with:
           fetch-depth: 0
 
-
-
-      - name: Get latest tag
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        
+      - name: Decide major or minor version
         id: compare_versions
-        uses: actions/github-script@v4
-        with:
-          script: |
-            const response = await github.repos.listTags({
-              owner: 'malikparvez',
-              repo: 'forge-standards'
-            });
-            latest_tag = response.data[0].name
-            console.log('Latest tag:', latestTag)
-            current_version=$(echo "$latest_tag" | cut -d'.' -f1 | sed 's/[^0-9]//g')
-            new_version=$(echo "${{ github.event.inputs.version }}" | cut -d'.' -f1 | sed 's/[^0-9]//g')
-            echo "new : $new_version"
-            echo "current: $current_version"
-            echo "current_version=$current_version" >> $GITHUB_OUTPUT
+        run: |
+          latest_tag=${{ steps.previoustag.outputs.tag }}
+          current_version=$(echo "$latest_tag" | cut -d'.' -f1 | sed 's/[^0-9]//g')
+          new_version=$(echo "${{ github.event.inputs.version }}" | cut -d'.' -f1 | sed 's/[^0-9]//g')
+          echo "new : $new_version"
+          echo "current: $current_version"
+          echo "current_version=$current_version" >> $GITHUB_OUTPUT
  
-            if [ "$new_version" -gt "$current_version" ]; then
+          if [ "$new_version" -gt "$current_version" ]; then
               echo "major_version_upgrade=true" >> $GITHUB_OUTPUT
               echo "base_branch=main" >> $GITHUB_OUTPUT
-            else
-              echo "major_version_upgrade=false" >> $GITHUB_OUTPUT
-              echo "base_branch=$current_version.0.0" >> $GITHUB_OUTPUT
-            fi
-            
-      #- name: Decide major or minor version
-      #  id: compare_versions
-      #  run: |
-      #    latest_tag=$(curl -sL https://api.github.com/repos/${GITHUB_REPOSITORY}/tags | jq -r '.[0].name')
-      #    current_version=$(echo "$latest_tag" | cut -d'.' -f1 | sed 's/[^0-9]//g')
-      #    new_version=$(echo "${{ github.event.inputs.version }}" | cut -d'.' -f1 | sed 's/[^0-9]//g')
-      #    echo "new : $new_version"
-      #    echo "current: $current_version"
-      #    echo "current_version=$current_version" >> $GITHUB_OUTPUT
- 
-      #    if [ "$new_version" -gt "$current_version" ]; then
-      #        echo "major_version_upgrade=true" >> $GITHUB_OUTPUT
-      #        echo "base_branch=main" >> $GITHUB_OUTPUT
-      #    else
-      #      echo "major_version_upgrade=false" >> $GITHUB_OUTPUT
-      #      echo "base_branch=$current_version.0.0" >> $GITHUB_OUTPUT
-      #    fi
-      #  env:
-      #    GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          else
+            echo "major_version_upgrade=false" >> $GITHUB_OUTPUT
+            echo "base_branch=$current_version.0.0" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           
        # if the version is not major then checkout current feature branch
       - name: checkout current feature branch
