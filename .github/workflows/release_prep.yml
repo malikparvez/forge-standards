@@ -30,7 +30,7 @@ jobs:
       - name: Generate changelog
         run: |
           export GH_HOST=github.com
-          git cliff --use-branch-tags --tag 6.0.0 -o CHANGELOG.md
+          git cliff --use-branch-tags --tag ${{ github.event.inputs.version }} -o CHANGELOG.md
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
