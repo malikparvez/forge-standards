@@ -24,11 +24,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: "Generate changelog"
+      - name: Set up git-cliff
+        uses: kenji-miyake/setup-git-cliff@v1
+
+      - name: Generate changelog
         run: |
           export GH_HOST=github.com
-          gh extension install chelnak/gh-changelog
-          gh changelog new --next-version v${{ github.event.inputs.version }}
+          git cliff --use-branch-tags --tag 6.0.0 -o CHANGELOG.md
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
